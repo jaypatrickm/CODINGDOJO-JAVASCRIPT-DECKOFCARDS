@@ -1,0 +1,245 @@
+<html>
+<head>
+	<title>Creating Objects</title>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+</head>
+<body>
+	<script>
+
+		function Player(name)
+		{
+			this.name = name;
+			this.cards;
+			this.test;
+		}
+		Player.prototype.newCard = function(deck)
+		{
+			var cardsLeft = deck.deck;
+			var remainingDeck = [];
+			for (var key in cardsLeft)
+			{
+				remainingDeck.push(key);
+			}
+	
+			var position = Math.floor(Math.random() * remainingDeck.length);
+			console.log(position);
+			var number = remainingDeck[position];
+			console.log(deck.deck[number]);
+			var len = Object.keys(this.cards).length;
+			this.cards[len] = deck.deck[number];
+		}
+		Player.prototype.discardCard = function(card)
+		{
+			delete this.cards[card];
+		}
+
+		//use prototype for methods/classes that will not change per object, that way it does not create a new instance for each new object, it will just inherit and use the prototype..spacesaver.
+		function Deck()
+		{
+			this.deck = {};
+			for(var i=0; i<52; i++)
+			{
+				this.deck[i] = this.cards[i];
+			}
+			// this.updateTest = function(Player){
+			// 	Player.test = 'yo yo yo';
+			// }
+		}
+
+		Deck.prototype.cards = {};
+		Deck.prototype.cards = 
+		{
+			0:'CA',
+			1:'C2',
+			2:'C3',
+			3:'C4',
+			4:'C5',
+			5:'C6',
+			6:'C7',
+			7:'C8',
+			8:'C9',
+			9:'C10',
+			10:'CJ',
+			11:'CQ',
+			12:'CK',
+			13:'HA',
+			14:'H2',
+			15:'H3',
+			16:'H4',
+			17:'H5',
+			18:'H6',
+			19:'H7',
+			20:'H8',
+			21:'H9',
+			22:'H10',
+			23:'HJ',
+			24:'HQ',
+			25:'HK',
+			26:'SA',
+			27:'S2',
+			28:'S3',
+			29:'S4',
+			30:'S5',
+			31:'S6',
+			32:'S7',
+			33:'S8',
+			34:'S9',
+			35:'S10',
+			36:'SJ',
+			37:'SQ',
+			38:'SK',
+			39:'DA',
+			40:'D2',
+			41:'D3',
+			42:'D4',
+			43:'D5',
+			44:'D6',
+			45:'D7',
+			46:'D8',
+			47:'D9',
+			48:'D10',
+			49:'DJ',
+			50:'DQ',
+			51:'DK'
+		}
+
+		Deck.prototype.shuffle = function()
+		{
+			function shuffle(o){
+			    for(var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+			    return o;
+			};
+			var allcards = [];
+			var indexes = [];
+			for (var i=0; i<this.deck.length; i++)
+			{
+				allcards.push(this.deck[i]);
+			}
+			var shuffledcards = shuffle(allcards);
+			for(var i=0; i<allcards.length; i++)
+			{
+				this.deck[i] = shuffledcards[i];
+			}
+		}
+
+		Deck.prototype.reset = function()
+		{
+			for (var i=0; i<52; i++)
+			{
+				this.deck[i] = this.cards[i];
+			}
+		}
+
+		Deck.prototype.randomCard = function()
+		{
+			var position = Math.floor(Math.random() * 53);
+			console.log(this.deck[position]);
+			delete this.deck[position];
+		}
+
+		Deck.prototype.displayCards = function()
+		{
+			console.log(this.deck);
+		}
+
+
+		Deck.prototype.dealCards = function(num, Player)
+		{
+			var hand = [];
+			var deck = this.deck;
+			var remainingDeck = [];
+			for (var key in deck)
+			{
+				remainingDeck.push(key);
+			}
+			for(var i = 0; i < num; i++)
+			{
+				var position = Math.floor(Math.random() * remainingDeck.length);
+				var number = remainingDeck[position];
+				console.log(hand.length);
+
+				// for (var j = 0; j < remainingDeck.length; j ++)
+				// {
+				// 	while (remainingDeck[j] == position)
+				// 	{
+				// 		var position = Math.floor(Math.random() * 52);
+				// 	}
+				// }
+
+				if (hand.length)
+				{
+					console.log('this is hand ' + hand)
+					for(var i = 0; i < hand.length; i++)
+					{
+						while(number == hand[i])
+						{
+							console.log('repeating number, re-randoming!');
+							position = Math.floor(Math.random() * remainingDeck.length);
+							number = remainingDeck[position];
+						}
+					}
+					hand.push(number);
+				}
+				else
+				{
+					hand.push(number);
+				}
+			}
+			console.log('this is hand ' + hand)
+			if (hand.length == num)
+			{
+				//console.dir(Player);
+				Player.cards = {};
+
+				for (var i = 0; i < hand.length; i++)
+				{
+					//console.log(Player);
+					Player.cards[i] = this.deck[hand[i]];
+				
+					delete this.deck[hand[i]];
+				}
+				console.log(Player.cards);
+				return Player.cards;
+			
+				//console.log(cards);
+			}
+		}
+
+		// Player.cards = {};
+		// Player.cards[0] = 'yo';
+		// Player.test = "works";
+		//console.log(Player.cards);
+		var deck = new Deck();
+		var Jay = new Player("Jay");
+		var Speros = new Player("Speros");
+		deck.dealCards(5, Jay);
+		deck.dealCards(5, Speros);
+		//console.dir(deck);
+		console.dir(Jay);
+		console.dir(deck);
+		console.dir(Speros);
+		console.log(deck);
+		Jay.newCard(deck);
+		Jay.newCard(deck);
+		console.log(Jay);
+		Jay.newCard(deck);
+		console.log(Jay);
+		Jay.discardCard(3);
+		console.log(Jay);
+		//deck.updateTest(Jay);
+		//console.dir(Jay);
+		// Jay.hand(5);
+		// console.log(Jay);
+		//deck.displayCards();
+		deck.shuffle();
+		//deck.displayCards();
+		//deck.randomCard();
+		//deck.displayCards();
+		//deck.randomCard();
+		//deck.reset();
+		//deck.displayCards();
+		//deck.shuffle();
+		//deck.reset();
+	</script>
+</body>
+</html>
